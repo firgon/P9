@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+  {% block content %}
+        
+      <h2>Ajouter un ticket</h2>
+
+      <div class="block">
+
+      <form action="" method="post">
+          {{ form.as_p }}
+          {% csrf_token %}
+          <input type="submit" value="Ajouter">
+      </form>
+    </div>
+  {% endblock content %}

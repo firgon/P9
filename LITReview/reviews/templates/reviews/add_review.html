@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+  {% block content %}
+        
+      <h2>Ajouter une Review</h2>
+
+      <div class="block">
+
+      <form action="" method="post">
+        <h3>Livre/Article</h3>
+
+          {% if ticket_form %}
+              {{ ticket_form.as_p }}
+          {% elif ticket %}
+                {% include 'reviews/ticket-block.html' %}
+          {% endif %}
+        <h3>Critique</h3>
+          {{ review_form.as_p }}
+          {% csrf_token %}
+          <input type="submit" value="Ajouter">
+      </form>
+    </div>
+  {% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="large">
+<h2>
+    {% if posts_user == request.user %}
+    Tous vos posts</h2>
+    {% else %}
+    Tous les posts de {{ posts_user.username }}</h2>
+
+        {% if followed %}
+    <a class="medium" href="{% url 'unfollow' posts_user.id %}"><button class="medium">Se désabonner</button></a>
+        {% else %}
+    <a class="medium" href="{% url 'follow' posts_user.id %}"><button class="medium">S'abonner</button></a>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% for post in posts %}
+    {% if post.content_type == "REVIEW" %}
+        {% include 'reviews/review-block.html' with review=post %}
+    {% elif post.content_type == "TICKET" %}
+        {% include 'reviews/ticket-block.html' with ticket=post %}
+    {% endif %}
+{% endfor %}
+
+{% endblock content %}

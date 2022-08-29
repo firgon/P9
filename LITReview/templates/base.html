@@ -1,20 +1,44 @@
+{% load static %}
 <html>
     <head>
         <title>LITReviews</title>
+        <link rel="stylesheet" href="{% static 'LITReview/styles.css' %}" />
     </head>
 
     <body>
-        <h1>LITReviews</h1>
+        <div class="header">
+            <h1><a href="{% url 'home' %}">LITReviews</a></h1>
+            <nav>
+               <!-- BLOCK ONLY FOR AUTHENTICATED USER -->
+    {% if user.is_authenticated %}
+        <a href="{% url 'home' %}">Flux</a>
+        <a href="{% url 'posts' user.id %}">Posts</a>
+        <a href="" class="TODO">Abonnement</a>
+        <a href="{% url 'logout' %}">Se déconnecter</a>
+        {%if user.is_superuser %}
+        <a href="{% url 'admin:index' %}">Admin</a>
+        {% endif %}
+    </p>
+{% else %}
+        <a href="{% url 'signup' %}">S'inscrire</a>
+        <a href="{% url 'login' %}">Se connecter</a>
+{% endif %} 
+            </nav>
+        </div>
+
+        {% if messages %}
+<ul class="messagelist">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+        
 
     <!-- MAIN BLOCK -->
+    <div class="content">
         {% block content %}{% endblock content %}
-
-        <!-- BLOCK ONLY FOR AUTHENTICATED USER -->
-    {% if user.is_authenticated %}
-            <p>Vous êtes connecté en tant que {{ request.user }}.
-                <a href="{% url 'logout' %}">Se déconnecter</a></p>
-        {% endif %}
-
+    </div>
 
     </body>
 </html>

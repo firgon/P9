@@ -1,4 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-    <p>Bienvenue {{ request.user }} ou {{ user.username}} </p>
+
+<a class="medium" href="{% url 'add_ticket' %}"><button class="medium">Demander une critique</button></a>
+<a class="medium" href="{% url 'add_review' %}"><button class="medium">Poster une critique</button></a>
+
+{% for post in posts %}
+    {% if post.content_type == "REVIEW" %}
+        {% include 'reviews/review-block.html' with review=post %}
+    {% elif post.content_type == "TICKET" %}
+        {% include 'reviews/ticket-block.html' with ticket=post %}
+    {% endif %}
+{% endfor %}
+
 {% endblock content %}
