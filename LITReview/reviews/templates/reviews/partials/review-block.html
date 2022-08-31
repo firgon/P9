@@ -7,7 +7,7 @@
     {% endif %}
     posté une critique en réponse à :
 </div>
-{% include 'reviews/ticket-block.html' with ticket=review.ticket condensed=True %}
+{% include 'reviews/partials/ticket-block.html' with ticket=review.ticket condensed=True %}
 
 
 <p class="floating">le {{ review.time_created }}</p>
@@ -15,6 +15,9 @@
         <p><strong>Note : </strong>{{ review.rating }}</p>
         <p><strong>Commentaire : </strong>{{ review.body }}</p>
 
-      
+    {% if review.user == user %}
+        {% url 'modify_review' review.ticket.id review.id as link %}
+        {% include 'reviews/partials/button_snippet.html' with link=link class='floating' text='modifier' %}
+    {% endif %}
 
     </div>

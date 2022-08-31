@@ -95,3 +95,10 @@ ul.messagelist.success li {
 .TODO{
     color:red
 }
+
+input.warning, button.warning {
+    background-color: orange;
+    border: 1px solid black;
+    border-radius: 3px;
+    margin-right: 5px;
+}

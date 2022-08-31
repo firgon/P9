@@ -9,7 +9,15 @@
       <form action="" method="post">
           {{ form.as_p }}
           {% csrf_token %}
-          <input type="submit" value="Ajouter">
+
+          {% if ticket %}
+          <input class="floating" type="submit" value="Modifier">
+            {% url 'delete_ticket' ticket.id as link %}
+        {% include 'reviews/partials/button_snippet.html' with link=link class='warning floating' text='Supprimer' %}
+
+          {% else %}
+            <input type="submit" value="Ajouter">
+          {% endif %}
       </form>
     </div>
   {% endblock content %}

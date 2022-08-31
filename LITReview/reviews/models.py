@@ -12,6 +12,7 @@ class Ticket(models.Model):
     image = models.ImageField(null=True,
                               blank=True)
     time_created = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
 
     def __str__(self):
         return self.title
@@ -33,6 +34,7 @@ class Review(models.Model):
                             verbose_name="Commentaire")
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
+    objects = models.Manager()
 
     time_created = models.DateTimeField(auto_now_add=True)
 
@@ -44,6 +46,7 @@ class UserFollows(models.Model):
     followed_user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
                                       on_delete=models.CASCADE,
                                       related_name='followed_by')
+    objects = models.Manager()
 
     class Meta:
         unique_together = [['user', 'followed_user']]

@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect
 from django.db.models import CharField, Value
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.views.generic import View, DetailView
+from django.views.generic import View, DetailView, DeleteView
+from django.urls import reverse_lazy
 
 from itertools import chain
+
 from authentication.models import User
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review, UserFollows
@@ -13,7 +15,7 @@ from django.conf import settings
 
 class Home(LoginRequiredMixin, View):
     """class to display main page"""
-    login_url = settings.LOGIN_REDIRECT_URL
+    login_url = settings.LOGIN_URL
     redirect_field_name = 'redirect_to'
     template_name = 'reviews/home.html'
 
@@ -50,7 +52,6 @@ class PostsList(LoginRequiredMixin, View):
                        key=lambda x: x.time_created,
                        reverse=True)
 
-
         return render(request,
                       self.template_name,
                       context={'posts': posts,
@@ -59,13 +60,14 @@ class PostsList(LoginRequiredMixin, View):
                                'followed': False})
 
 
-class AddTicketReview(LoginRequiredMixin, View):
-    """class to display a form to create a review WITHOUT ticket"""
+class PostReview(LoginRequiredMixin, View):
+    """class to display a form to create/modify/delete a review"""
     template = 'reviews/add_review.html'
     pk_url_kwarg = 'ticket_id'
 
-    def get(self, request, ticket_id=None):
-        """display a form to create a ticket if there is no ticket in param"""
+    def get(self, request, ticket_id=None, review_id=None):
+        """display a form to create a ticket if there is no ticket in param
+        and a form to create a ticket, or to modify a review if param"""
         if ticket_id is None:
             ticket_form = TicketForm()
             ticket = None
@@ -73,14 +75,26 @@ class AddTicketReview(LoginRequiredMixin, View):
             ticket_form = None
             ticket = Ticket.objects.get(id=ticket_id)
 
-        review_form = ReviewForm()
+        if review_id is None:
+            review_form = ReviewForm()
+            review = None
+        else:
+            review = Review.objects.get(id=review_id)
+            review_form = ReviewForm(instance=review)
+
         return render(request, self.template, {'ticket_form': ticket_form,
                                                'ticket': ticket,
-                                               'review_form': review_form})
+                                               'review_form': review_form,
+                                               'review': review})
 
-    def post(self, request, ticket_id=None):
+    def post(self, request, ticket_id=None, review_id=None):
         """register new review with a ticket id or a new created ticket"""
-        review_form = ReviewForm(request.POST)
+        if review_id is not None:
+            review = Review.objects.get(id=review_id)
+            review_form = ReviewForm(request.POST, instance=review)
+        else:
+            review_form = ReviewForm(request.POST)
+
         ticket = None
 
         if ticket_id is None:
@@ -102,22 +116,47 @@ class AddTicketReview(LoginRequiredMixin, View):
 
 
 class AddTicket(LoginRequiredMixin, View):
-    """Display a form to add a new ticket"""
+    """Display a form to add or modify a new ticket"""
     model_form = TicketForm
     template_name = 'reviews/add_ticket.html'
 
-    def get(self, request):
-        form = self.model_form()
-        return render(request, self.template_name, {'form': form})
+    def get(self, request, ticket_id=None):
+        if ticket_id is not None:
+            ticket = Ticket.objects.get(id=ticket_id)
+            form = self.model_form(instance=ticket)
+        else:
+            form = self.model_form()
 
-    def post(self, request):
-        form = self.model_form(request.POST)
+        return render(request, self.template_name, {'form': form,
+                                                    'ticket': ticket})
+
+    def post(self, request, ticket_id=None):
+        if ticket_id is not None:
+            ticket = Ticket.objects.get(id=ticket_id)
+            form = self.model_form(request.POST, instance=ticket)
+        else:
+            form = self.model_form(request.POST)
+
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
             messages.success(request, 'Votre ticket a été enregistré.')
             return redirect('ticket-detail', ticket.id)
+
+
+class DeleteReview(LoginRequiredMixin, DeleteView):
+    model = Review
+    pk_url_kwarg = 'review_id'
+    template_name = 'reviews/delete_review.html'
+    success_url = reverse_lazy('home')
+
+
+class DeleteTicket(LoginRequiredMixin, DeleteView):
+    model = Ticket
+    pk_url_kwarg = 'ticket_id'
+    template_name = 'reviews/delete_ticket.html'
+    success_url = reverse_lazy('home')
 
 
 class TicketDetail(LoginRequiredMixin, DetailView):

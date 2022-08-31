@@ -11,7 +11,9 @@
       <form method="post">
           {{ form.as_p }}
           {% csrf_token %}
-          <a href="{% url 'home' %}"><button formaction="" form="">Retour</button></a>
+          {# <a href="{% url 'home' %}"><button formaction="" form="">Retour</button></a> #}
+          {% url 'home' as link %}
+          {% include 'reviews/partials/button_snippet.html' with text='Retour' link=link %}
           <button type="submit" >S’inscrire</button>
       </form>
     </div>

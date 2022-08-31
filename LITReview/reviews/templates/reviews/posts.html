@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load blog_extra %}
 {% block content %}
 
 <div class="large">
@@ -17,10 +18,10 @@
 </div>
 
 {% for post in posts %}
-    {% if post.content_type == "REVIEW" %}
-        {% include 'reviews/review-block.html' with review=post %}
-    {% elif post.content_type == "TICKET" %}
-        {% include 'reviews/ticket-block.html' with ticket=post %}
+    {% if post|is_review %}
+        {% include 'reviews/partials/review-block.html' with review=post %}
+    {% elif post|is_ticket %}
+        {% include 'reviews/partials/ticket-block.html' with ticket=post %}
     {% endif %}
 {% endfor %}
 

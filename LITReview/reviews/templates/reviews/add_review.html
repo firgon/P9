@@ -12,12 +12,21 @@
           {% if ticket_form %}
               {{ ticket_form.as_p }}
           {% elif ticket %}
-                {% include 'reviews/ticket-block.html' %}
+                {% include 'reviews/partials/ticket-block.html' with condensed=True %}
           {% endif %}
+
         <h3>Critique</h3>
           {{ review_form.as_p }}
           {% csrf_token %}
-          <input type="submit" value="Ajouter">
+
+          {% if review %}
+          <input class= "floating" type="submit" value="Modifier">
+            {% url 'delete_review' review.id as link %}
+        {% include 'reviews/partials/button_snippet.html' with link=link class='warning floating' text='Supprimer' %}
+
+          {% else %}
+            <input type="submit" value="Ajouter">
+          {% endif %}
       </form>
     </div>
   {% endblock content %}

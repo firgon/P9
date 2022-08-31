@@ -25,4 +25,10 @@
 
         {% endfor %}
     {% endif %}
+
+    {# ADD modify button if post is from active user #}
+    {% if ticket.user == user %}
+        {% url 'modify_ticket' ticket.id as link %}
+        {% include 'reviews/partials/button_snippet.html' with link=link class='floating' text='modifier' %}
+    {% endif %}
 </div>

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+  {% block content %}
+
+<form method="post">{% csrf_token %}
+    <p class="large">Êtes-vous certain de vouloir supprimer "{{ review.headline }}"?</p>
+    {{ form }}
+    <input type="submit" class="warning" value="Confirmer">
+</form>
+
+    {% include 'reviews/partials/review-block.html' %}
+
+  {% endblock content %}

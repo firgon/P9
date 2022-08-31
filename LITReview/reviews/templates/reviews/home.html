@@ -6,9 +6,9 @@
 
 {% for post in posts %}
     {% if post.content_type == "REVIEW" %}
-        {% include 'reviews/review-block.html' with review=post %}
+        {% include 'reviews/partials/review-block.html' with review=post %}
     {% elif post.content_type == "TICKET" %}
-        {% include 'reviews/ticket-block.html' with ticket=post %}
+        {% include 'reviews/partials/ticket-block.html' with ticket=post %}
     {% endif %}
 {% endfor %}
 
