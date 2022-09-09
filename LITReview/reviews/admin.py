@@ -4,4 +4,3 @@ from . import models
 
 admin.site.register(models.Ticket)
 admin.site.register(models.Review)
-admin.site.register(models.UserFollows)

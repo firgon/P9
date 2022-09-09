@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{# a form to add user to follow #}
+
+        <form action class="large" method="post">
+            <label for="user">Quel utilisateur voulez-vous suivre :</label>
+            <input list="users" type="text" name="user" id="user">
+            <datalist id="users">
+                {% for user in users %}
+                    <option value="{{ user }}">
+                {% endfor %}
+            </datalist>
+            {% csrf_token %}
+
+            {% if message %}
+                <p class="error">{{ message }}</p>
+            {% endif %}
+
+            <button type="submit" >Ajouter</button>
+        </form>
+
+{# list of followed users, one per block with a button to unflollow : #}
+
+    {% for user in followed_users %}
+        <div class="block large no-margin">
+            <a href="{% url 'posts' user.id %}">{{ user.username }}</a>
+            {% url 'unfollow' user.id as link %}
+            {% include 'reviews/partials/button_snippet.html' with link=link class='floating' text='Se désabonner' %}
+        </div>
+    {% endfor %}
+
+{% endblock content %}

@@ -39,8 +39,14 @@ urlpatterns = [
 
     #follow un-follow
     path('follow/<int:user_id>',
-         reviews.views.Follow.as_view(),
+         authentication.views.Follow.as_view(),
          name='follow'),
+    path('unfollow/<int:user_id>',
+         authentication.views.UnFollow.as_view(),
+         name='unfollow'),
+    path('following/',
+         authentication.views.Following.as_view(),
+         name="following"),
 
     # reviews Views
     path('tickets/add/', reviews.views.AddTicket.as_view(), name='add_ticket'),

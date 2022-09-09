@@ -1,6 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
+
 from django import forms
+from .models import User
 
 
 class LoginForm(forms.Form):
@@ -14,3 +16,9 @@ class SignupForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = get_user_model()
         fields = ['username']
+
+
+class FollowForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['follows']

@@ -15,4 +15,5 @@ def is_review(instance):
 
 @register.filter
 def is_ticket(instance):
+    print(type(instance))
     return type(instance).__name__ == "Ticket"

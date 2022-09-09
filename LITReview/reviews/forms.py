@@ -12,4 +12,3 @@ class ReviewForm(ModelForm):
     class Meta:
         model = Review
         exclude = ('user', 'time_created', 'ticket')
-

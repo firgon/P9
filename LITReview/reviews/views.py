@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import CharField, Value
+from django.db.models import CharField, Value, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic import View, DetailView, DeleteView
@@ -7,9 +7,9 @@ from django.urls import reverse_lazy
 
 from itertools import chain
 
-from authentication.models import User
+from authentication.models import User, UserFollows
 from .forms import TicketForm, ReviewForm
-from .models import Ticket, Review, UserFollows
+from .models import Ticket, Review
 from django.conf import settings
 
 
@@ -20,10 +20,17 @@ class Home(LoginRequiredMixin, View):
     template_name = 'reviews/home.html'
 
     def get(self, request):
-        tickets = Ticket.objects.all().filter(user=request.user)
-        tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
-        reviews = Review.objects.all().filter(user=request.user)
-        reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+        tickets = Ticket.objects.filter(
+            Q(user__in=request.user.follows.all()) |
+            Q(user=request.user)
+        )
+        # tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+        reviews = Review.objects.filter(
+            Q(user__in=request.user.follows.all()) |
+            Q(user=request.user) |
+            Q(ticket__user=request.user)
+        )
+        # reviews  = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
         posts = sorted(chain(reviews, tickets),
                        key=lambda x: x.time_created,
@@ -44,20 +51,21 @@ class PostsList(LoginRequiredMixin, View):
         posts_user = User.objects.get(id=user_id)
 
         tickets = Ticket.objects.all().filter(user=posts_user)
-        tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+        # tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
         reviews = Review.objects.all().filter(user=posts_user)
-        reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+        # reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
         posts = sorted(chain(reviews, tickets),
                        key=lambda x: x.time_created,
                        reverse=True)
 
+        bool_followed = posts_user in request.user.follows.all()
+
         return render(request,
                       self.template_name,
                       context={'posts': posts,
                                'posts_user': posts_user,
-                               # TODO
-                               'followed': False})
+                               'followed': bool_followed})
 
 
 class PostReview(LoginRequiredMixin, View):
@@ -126,6 +134,7 @@ class AddTicket(LoginRequiredMixin, View):
             form = self.model_form(instance=ticket)
         else:
             form = self.model_form()
+            ticket = None
 
         return render(request, self.template_name, {'form': form,
                                                     'ticket': ticket})
@@ -169,16 +178,3 @@ class ReviewDetail(LoginRequiredMixin, DetailView):
     model = Review
     template_name = 'reviews/review_detail.html'
     pk_url_kwarg = 'review_id'
-
-
-class Follow(LoginRequiredMixin, View):
-    model = UserFollows
-
-    def get(self, request, user_id):
-        followed_user = User.objects.get(id=user_id)
-        follow = self.model()
-        follow.user = request.user
-        follow.followed_user = followed_user
-        follow.save()
-        return redirect('home')
-

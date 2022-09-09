@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load blog_extra %}
+
 {% block content %}
 
 <div class="large">
@@ -17,12 +17,6 @@
     {% endif %}
 </div>
 
-{% for post in posts %}
-    {% if post|is_review %}
-        {% include 'reviews/partials/review-block.html' with review=post %}
-    {% elif post|is_ticket %}
-        {% include 'reviews/partials/ticket-block.html' with ticket=post %}
-    {% endif %}
-{% endfor %}
+{% include 'reviews/partials/posts_list.html' %}
 
 {% endblock content %}

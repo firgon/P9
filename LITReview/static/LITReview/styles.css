@@ -35,24 +35,31 @@ ul.messagelist {
     margin: 0;
 }
 
-.error {
-    color: red;
-}
-
 .helptext {
     display: block;
     font-style: italic;
     font-size: small;
 }
-ul.messagelist.success li {
+ul.messagelist li {
     display: block;
     font-weight: 400;
     font-size: 0.8125rem;
     padding: 10px 10px 10px 65px;
     margin: 0 0 10px 0;
-    background: #dfd 40px 12px no-repeat;
     background-size: 16px auto;
     word-break: break-word;
+}
+
+.success{
+    background-color: lightgreen;
+    padding: 10px;
+    border: 2px solid green;
+}
+
+.error {
+    background-color: lightpink;
+    padding: 10px;
+    border: 2px solid red;
 }
 
 .description {
@@ -81,6 +88,11 @@ ul.messagelist.success li {
     text-align: center;
     min-width: 40%;
     min-height: 40px;
+}
+
+.no-margin{
+    margin-top: 0px;
+    margin-bottom: -1px;
 }
 
 .legend{
