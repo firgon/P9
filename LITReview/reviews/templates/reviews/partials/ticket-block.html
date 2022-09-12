@@ -1,3 +1,5 @@
+{# This snippet display a TICKET with "condensed" bool arg : if it's condensed, it doesn't display the corresponding REVIEW block #}
+
 <div class="block large">
 
     <div class="legend">
@@ -12,23 +14,23 @@
     <p class="floating">le {{ ticket.time_created }}</p>
     
     <h2><a href="{% url 'ticket-detail' ticket.id %}">{{ ticket.title }}</a></h2>
-  <p>Description : {{ ticket.description }}</p>
+
+    <p>Description : {{ ticket.description }}</p>
+
 
     {% if not condensed %}
         {% for review in ticket.review_set.all %}
-
                 <p>Ce ticket a reçu une réponse : <a href="{% url 'review-detail' review.id %}">{{ review.headline }}</a></p>
-
         {% empty %}
-
                 <p>Ce ticket n'a pas encore obtenu de réponse. <a href="{% url 'add_review_to_ticket' ticket.id %}"><button formaction="" form="">Poster une review</button></a></p>
-
         {% endfor %}
     {% endif %}
 
-    {# ADD modify button if post is from active user #}
+
+{# ADD modify button if post is from active user #}
     {% if ticket.user == user %}
         {% url 'modify_ticket' ticket.id as link %}
         {% include 'reviews/partials/button_snippet.html' with link=link class='floating' text='modifier' %}
     {% endif %}
+
 </div>

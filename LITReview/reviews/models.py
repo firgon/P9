@@ -3,6 +3,7 @@ from django.conf import settings
 
 
 class Ticket(models.Model):
+    """A TICKET is a demand for a REVIEW, it could be created when a REVIEW is writen from no existing TICKET"""
     title = models.CharField(verbose_name="Titre", max_length=128)
     description = models.CharField(max_length=2048)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
@@ -17,9 +18,10 @@ class Ticket(models.Model):
 
 
 class Review(models.Model):
+    """A REVIEW is a critic of a book or article, always responding to a TICKET
+    (if this one doesn't exist yet, the user will create it in the same time as REVIEW)"""
     rating_choices = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)]
 
-    # Main model of this module, store reviews from user
     ticket = models.ForeignKey(to=Ticket,
                                on_delete=models.CASCADE)
     headline = models.CharField(max_length=128,

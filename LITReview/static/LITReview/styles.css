@@ -114,3 +114,7 @@ input.warning, button.warning {
     border-radius: 3px;
     margin-right: 5px;
 }
+
+textarea {
+vertical-align : top;
+}

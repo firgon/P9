@@ -7,6 +7,8 @@
       <div class="block">
 
       <form action="" method="post">
+
+  {# first display a form to create a TICKET or if there is already a TICKET created: display the TICKET block #}
         <h3>Livre/Article</h3>
 
           {% if ticket_form %}
@@ -14,6 +16,8 @@
           {% elif ticket %}
                 {% include 'reviews/partials/ticket-block.html' with condensed=True %}
           {% endif %}
+
+  {# then display the form to create the REVIEW #}
 
         <h3>Critique</h3>
           {{ review_form.as_p }}
