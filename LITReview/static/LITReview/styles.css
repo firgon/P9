@@ -118,3 +118,7 @@ input.warning, button.warning {
 textarea {
 vertical-align : top;
 }
+
+form #id_rating div{
+display: inline-block;
+}

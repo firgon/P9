@@ -6,6 +6,8 @@
     <p class="large">Ê
         tes-vous certain de vouloir supprimer "{{ ticket.title }}"?</p>
     {{ form }}
+    {% url 'ticket-detail' ticket.id as link %}
+    {% include 'reviews/partials/button_snippet.html' with link=link text="Retour" %}
     <input type="submit" class="warning" value="Confirmer">
 </form>
 

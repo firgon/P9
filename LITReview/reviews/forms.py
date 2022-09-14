@@ -1,4 +1,4 @@
-from django.forms import ModelForm, Textarea
+from django.forms import ModelForm, Textarea, RadioSelect
 from .models import Ticket, Review
 
 
@@ -17,4 +17,5 @@ class ReviewForm(ModelForm):
         exclude = ('user', 'time_created', 'ticket')
         widgets = {
             'body': Textarea(attrs={'cols': 50, 'rows': 3}),
+            'rating': RadioSelect()
         }

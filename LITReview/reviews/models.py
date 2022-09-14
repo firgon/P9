@@ -28,7 +28,8 @@ class Review(models.Model):
                                 verbose_name="Titre")
     rating = models.PositiveSmallIntegerField(
         verbose_name="Note",
-        choices=rating_choices)
+        choices=rating_choices,
+        default=rating_choices[3])
     body = models.CharField(max_length=8192,
                             blank=True,
                             verbose_name="Commentaire")

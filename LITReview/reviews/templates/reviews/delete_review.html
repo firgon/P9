@@ -5,6 +5,8 @@
 <form method="post">{% csrf_token %}
     <p class="large">Êtes-vous certain de vouloir supprimer "{{ review.headline }}"?</p>
     {{ form }}
+    {% url 'review-detail' review.id as link %}
+    {% include 'reviews/partials/button_snippet.html' with link=link text="Retour" %}
     <input type="submit" class="warning" value="Confirmer">
 </form>
 

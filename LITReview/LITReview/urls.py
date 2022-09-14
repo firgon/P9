@@ -73,7 +73,7 @@ urlpatterns = [
     path('reviews/<int:review_id>/delete',
          reviews.views.DeleteReview.as_view(),
          name='delete_review'),
-    path('ticket/<int:ticket_id>/delete',
+    path('tickets/<int:ticket_id>/delete',
          reviews.views.DeleteTicket.as_view(),
          name='delete_ticket'),
 

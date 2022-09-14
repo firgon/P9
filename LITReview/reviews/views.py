@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import CharField, Value, Q
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic import View, DetailView, DeleteView
@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 
 from itertools import chain
 
-from authentication.models import User, UserFollows
+from authentication.models import User
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review
 from django.conf import settings
@@ -30,7 +30,7 @@ class Home(LoginRequiredMixin, View):
             Q(user=request.user) |
             Q(ticket__user=request.user)
         )
-        # reviews  = reviews.annotate(content_type=Value('REVIEW', CharField()))
+        # reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
         posts = sorted(chain(reviews, tickets),
                        key=lambda x: x.time_created,
@@ -75,7 +75,7 @@ class PostReview(LoginRequiredMixin, View):
 
     def get(self, request, ticket_id=None, review_id=None):
         """display a form to create a ticket if there is no ticket in param
-        and a form to create a ticket, or to modify a review if param"""
+        and a form to create a ticket, or to modify a review in param"""
         if ticket_id is None:
             ticket_form = TicketForm()
             ticket = None
@@ -100,8 +100,10 @@ class PostReview(LoginRequiredMixin, View):
         if review_id is not None:
             review = Review.objects.get(id=review_id)
             review_form = ReviewForm(request.POST, instance=review)
+            success_message = 'Votre review a été modifiée.'
         else:
             review_form = ReviewForm(request.POST)
+            success_message = 'Votre review a été enregistrée.'
 
         ticket = None
 
@@ -119,7 +121,7 @@ class PostReview(LoginRequiredMixin, View):
             review.user = request.user
             review.ticket = ticket
             review.save()
-            messages.success(request, 'Votre review a été enregistrée.')
+            messages.success(request, success_message)
             return redirect('review-detail', review.id)
 
 
@@ -143,14 +145,16 @@ class AddTicket(LoginRequiredMixin, View):
         if ticket_id is not None:
             ticket = Ticket.objects.get(id=ticket_id)
             form = self.model_form(request.POST, instance=ticket)
+            success_message = 'Votre ticket a été modifié.'
         else:
             form = self.model_form(request.POST)
+            success_message = 'Votre ticket a été enregistré.'
 
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
-            messages.success(request, 'Votre ticket a été enregistré.')
+            messages.success(request, success_message)
             return redirect('ticket-detail', ticket.id)
 
 
@@ -159,6 +163,19 @@ class DeleteReview(LoginRequiredMixin, DeleteView):
     pk_url_kwarg = 'review_id'
     template_name = 'reviews/delete_review.html'
     success_url = reverse_lazy('home')
+    # success_message = "Votre critique a bien été supprimée"
+
+    def dispatch(self, request, *args, **kwargs):
+        """override dispatch to check if
+        request.user is deleting is own content"""
+        review_id = kwargs['review_id']
+        review = Review.objects.get(id=review_id)
+        if review.user == request.user:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            messages.error(request,
+                           "Vous n'êtes pas autorisé à supprimer ce contenu")
+            return redirect('review-detail', review_id)
 
 
 class DeleteTicket(LoginRequiredMixin, DeleteView):
@@ -166,6 +183,19 @@ class DeleteTicket(LoginRequiredMixin, DeleteView):
     pk_url_kwarg = 'ticket_id'
     template_name = 'reviews/delete_ticket.html'
     success_url = reverse_lazy('home')
+    # success_message = "Votre demande de critique a bien été supprimée"
+
+    def dispatch(self, request, *args, **kwargs):
+        """override dispatch to check if
+        request.user is deleting is own content"""
+        ticket_id = kwargs['ticket_id']
+        ticket = Ticket.objects.get(id=ticket_id)
+        if ticket.user == request.user:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            messages.error(request,
+                           "Vous n'êtes pas autorisé à supprimer ce contenu")
+            return redirect('ticket-detail', ticket_id)
 
 
 class TicketDetail(LoginRequiredMixin, DetailView):
