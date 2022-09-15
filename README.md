@@ -1,6 +1,6 @@
-# LitReview
+# LITReview
 
-(This is an exercize project for OpenClassRoom)
+(This is an exercize project for OpenClassRooms)
 
 A social website to ask for critics about books or article,
 or to publish critics. You can follow users 
@@ -13,12 +13,14 @@ You will need Python and Git installed on your device.
 
 
 2. Install requirements  
-From your installation folder :   
-`pip install requirements.txt`
+From your installation folder (P9):   
+`pip install -r requirements.txt`
+
 
 3. Launch test Server
-From your installation folder :
+From your installation folder (P9):  
 `python manage.py runserver`
    
+
 4 Enjoy the website !   
 With your favorite browser, navigate to [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
