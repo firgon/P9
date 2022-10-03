@@ -1,12 +1,13 @@
+[![forthebadge](https://forthebadge.com/images/badges/cc-0.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
 # LITReview
 
 (This is an exercize project for OpenClassRooms)
 
-A social website to ask for critics about books or article,
+LITReview is a social website to ask for critics about books or article,
 or to publish critics. You can follow users 
 so what they published appears in your timeline.
 
-### How to install a test server on your computer
+## Local installation
 You will need Python and Git installed on your device.
 1. Import the LitReview sources  
 `git clone https://github.com/firgon/P9`
@@ -17,10 +18,20 @@ From your installation folder (P9):
 `pip install -r requirements.txt`
 
 
-3. Launch test Server
+## Usage
+1. Launch test Server
 From your installation folder (P9):  
 `python manage.py runserver`
    
 
-4 Enjoy the website !   
+2. Enjoy the website !   
 With your favorite browser, navigate to [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+You will have to create an account in order to read tickets already registered in db.
+Once logged, you get access to all functions : create ticket, create review, follow a user... 
+## Technologies
+- Python
+
+## Authors
+
+Our code squad : Firgon
